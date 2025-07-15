@@ -2,11 +2,20 @@
 
 ## Table of Contents
 1. [Overview](#1-overview)
-2. [Folder Structure & File-by-File Breakdown](#2-folder-structure--file-by-file-breakdown)
-3. [Main Features](#3-main-features)
-4. [How to Use](#4-how-to-use)
-5. [Notes](#5-notes)
-6. [Supabase Schema and Row Level Security (RLS)](#6-supabase-schema-and-row-level-security-rls)
+2. [Quick Start](#2-quick-start)
+3. [Folder Structure & File-by-File Breakdown](#3-folder-structure--file-by-file-breakdown)
+4. [Main Features](#4-main-features)
+5. [How to Use](#5-how-to-use)
+6. [API Documentation](#6-api-documentation)
+7. [Testing](#7-testing)
+8. [Deployment](#8-deployment)
+9. [Development Workflow](#9-development-workflow)
+10. [Troubleshooting](#10-troubleshooting)
+11. [Performance Considerations](#11-performance-considerations)
+12. [Security Considerations](#12-security-considerations)
+13. [Contributing](#13-contributing)
+14. [License](#14-license)
+15. [Supabase Schema and Row Level Security (RLS)](#15-supabase-schema-and-row-level-security-rls)
 
 ## 1. Overview
 
@@ -21,13 +30,35 @@ Social Service Hub is a comprehensive, modern admin dashboard built with React, 
 *   **State Management:** TanStack Query
 *   **Forms:** React Hook Form
 
----
+## 2. Quick Start
 
-## 2. Folder Structure & File-by-File Breakdown
+```bash
+# Clone the repository
+git clone <repository-url>
+cd social-service-hub
+
+# Install dependencies
+npm install
+# or
+bun install
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your Supabase credentials
+
+# Start development server
+npm run dev
+# or
+bun run dev
+
+# Open http://localhost:5173 in your browser
+```
+
+## 3. Folder Structure & File-by-File Breakdown
 
 This section provides a detailed breakdown of the project's structure and the purpose of each file.
 
-### 2.1. `/` (Root Directory)
+### 3.1. `/` (Root Directory)
 
 *   **`vite.config.ts`**: Vite configuration file. Sets up the development server, plugins (including React and a component tagger for development), and path aliases.
 *   **`package.json`**: Defines project metadata, dependencies, and scripts.
@@ -35,14 +66,13 @@ This section provides a detailed breakdown of the project's structure and the pu
 *   **`tailwind.config.ts`**: Tailwind CSS configuration, including theme customizations and plugins.
 *   **`postcss.config.js`**: PostCSS configuration for processing CSS.
 *   **`index.html`**: The main HTML entry point for the application.
-*   **`README.md`**: General information about the project.
-*   **`doc.md`**: This documentation file.
+*   **`README.md`**: Project documentation.
 
-### 2.2. `/src`
+### 3.2. `/src`
 
 This directory contains the core source code of the application.
 
-#### 2.2.1. `/api`
+#### 3.2.1. `/api`
 
 Contains all API functions for interacting with the Supabase backend.
 
@@ -56,7 +86,7 @@ Contains all API functions for interacting with the Supabase backend.
 *   **`transactionApi.ts`**: Manages transaction-related data.
 *   **`addFundApi.ts`**: Handles wallet and fund management.
 
-#### 2.2.2. `/components`
+#### 3.2.2. `/components`
 
 Contains reusable UI components.
 
@@ -66,109 +96,490 @@ Contains reusable UI components.
     *   **`LoadingSpinner.tsx`**: A loading spinner component.
     *   **`NavBar.tsx`**: The main navigation bar.
     *   **`ProtectedRoute.tsx`**: A component to protect routes that require authentication.
-*   **`/ui`**: Contains [shadcn/ui](https://ui.shadcn.com/) primitive components, which are reusable, accessible, and customizable UI primitives. These are mostly third-party, but can be customized as needed.
+*   **`/ui`**: Contains [shadcn/ui](https://ui.shadcn.com/) primitive components, which are reusable, accessible, and customizable UI primitives.
 
-#### 2.2.3. `/contexts`
+#### 3.2.3. `/contexts`
 
 *   **`AuthProvider.tsx`**: A React context provider that manages the application's authentication state, making user information available to all components that need it.
 
-#### 2.2.4. `/hooks`
+#### 3.2.4. `/hooks`
 
 Contains custom React hooks for shared logic.
 
-*   **`useAuth.ts`**: A hook that provides easy access to the authentication context (e.g., user data, login/logout functions).
+*   **`useAuth.ts`**: A hook that provides easy access to the authentication context.
 *   **`useDebounce.ts`**: A hook to debounce input, useful for delaying API calls in search and filter inputs.
-*   **`use-mobile.tsx`**: A hook to detect if the application is being viewed on a mobile device, allowing for responsive UI adjustments.
+*   **`use-mobile.tsx`**: A hook to detect if the application is being viewed on a mobile device.
 *   **`use-toast.ts`**: A hook for displaying toast notifications.
 
-#### 2.2.5. `/layouts`
+#### 3.2.5. `/layouts`
 
-*   **`AdminLayout.tsx`**: The main layout for all admin pages, typically including the `AdminSidebar` and a content area.
+*   **`AdminLayout.tsx`**: The main layout for all admin pages, including the `AdminSidebar` and content area.
 *   **`MainLayout.tsx`**: The layout for public-facing or user-specific pages.
 
-#### 2.2.6. `/lib`
+#### 3.2.6. `/lib`
 
-*   **`supabaseClient.ts`**: Initializes and exports the Supabase client, making it available for use throughout the application. It reads the Supabase URL and anon key from environment variables.
-*   **`utils.ts`**: Contains utility functions used across the application, such as `cn` for merging Tailwind CSS classes.
+*   **`supabaseClient.ts`**: Initializes and exports the Supabase client.
+*   **`utils.ts`**: Contains utility functions used across the application.
 
-#### 2.2.7. `/pages`
+#### 3.2.7. `/pages`
 
 Contains the main pages of the application.
 
 *   **`/admin`**:
-    *   **`ControlCenter.tsx`**: The main admin dashboard, displaying key statistics like new members, popular services, and recent orders.
-    *   **`UserManagement.tsx`**: A page for managing users (listing, searching, filtering, and viewing details).
-    *   **`UserDetail.tsx`**: A page displaying detailed information about a specific user.
-    *   **`OrderManager.tsx`**: A page for managing orders.
-    *   **`OrderDetail.tsx`**: A page displaying detailed information about a specific order.
-    *   **`ServiceManager.tsx`**: A page for managing services.
-    *   **`TransactionManager.tsx`**: A page for managing transactions.
+    *   **`ControlCenter.tsx`**: The main admin dashboard with key statistics.
+    *   **`UserManagement.tsx`**: User management page with CRUD operations.
+    *   **`UserDetail.tsx`**: Detailed user information page.
+    *   **`OrderManager.tsx`**: Order management page.
+    *   **`OrderDetail.tsx`**: Detailed order information page.
+    *   **`ServiceManager.tsx`**: Service management page.
+    *   **`TransactionManager.tsx`**: Transaction management page.
 *   **`/auth`**:
-    *   **`LoginPage.tsx`**: The login page.
-    *   **`RegisterPage.tsx`**: The user registration page.
+    *   **`LoginPage.tsx`**: User login page.
+    *   **`RegisterPage.tsx`**: User registration page.
 *   **`/user`**:
-    *   **`HomePage.tsx`**: The user's home page. Displays all available services; users can place orders.
-    *   **`MyOrdersPage.tsx`**: A page where users can view their own orders.
-    *   **`OrderServicePage.tsx`**: A page for ordering new services.
-    *   **`TransactionPage.tsx`**: A page where users can view their transactions.
-    *   **`WalletPage.tsx`**: A page for managing the user's wallet.
-*   **`NotFoundPage.tsx`**: A 404 page for handling invalid routes.
+    *   **`HomePage.tsx`**: User home page with available services.
+    *   **`MyOrdersPage.tsx`**: User's order history page.
+    *   **`OrderServicePage.tsx`**: Service ordering page.
+    *   **`TransactionPage.tsx`**: User transaction history page.
+    *   **`WalletPage.tsx`**: User wallet management page.
+*   **`NotFoundPage.tsx`**: 404 error page.
 
-#### 2.2.8. `/types`
+#### 3.2.8. `/types`
 
-*   **`index.ts`**: Contains all TypeScript type definitions for the application's data structures, such as `User`, `Order`, `Service`, and `Transaction`.
+*   **`index.ts`**: TypeScript type definitions for the application's data structures.
 
-### 2.3. Main Application Files
+### 3.3. Main Application Files
 
-*   **`main.tsx`**: The entry point of the React application. It renders the `App` component into the DOM.
-*   **`App.tsx`**: The root component of the application. It sets up the main providers (`QueryClientProvider`, `TooltipProvider`, `AuthProvider`), defines the application's routes using `react-router-dom`, and includes the global `Toaster` components for notifications.
-*   **`index.css`**: Global CSS styles for the application.
+*   **`main.tsx`**: The entry point of the React application.
+*   **`App.tsx`**: The root component setting up providers and routes.
+*   **`index.css`**: Global CSS styles.
 
----
+## 4. Main Features
 
-## 3. Main Features
+*   **User Management**: Full CRUD operations for users with status management and search capabilities.
+*   **Service Management**: Comprehensive service management with pagination and status toggles.
+*   **Order Management**: Detailed order tracking with status workflows and refund logic.
+*   **Transaction Management**: Complete financial transaction records with detailed views.
+*   **Admin Dashboard**: Central hub with statistics and insights.
+*   **Authentication**: Secure login/registration with protected routes.
+*   **Supabase Integration**: Scalable backend with real-time capabilities.
+*   **Responsive UI**: Mobile-friendly design with accessibility features.
+*   **Wallet System**: Integrated wallet management with balance tracking.
+*   **Real-time Updates**: Live data synchronization across all components.
 
-*   **User Management**: Full CRUD operations for users, including status management, detailed views, and powerful search and filtering capabilities.
-*   **Service Management**: Comprehensive CRUD for services, with support for pagination, status toggles, and a modal-based UX for creating and editing.
-*   **Order Management**: Detailed order tracking, status workflows (e.g., pending, completed, cancelled), and refund logic.
-*   **Transaction Management**: A complete record of all financial transactions, with detailed views and pagination.
-*   **Admin Dashboard**: A central hub for administrators, providing at-a-glance statistics and insights into the platform's activity.
-*   **Authentication**: Secure login and registration, with protected routes to ensure only authorized users can access the admin panel.
-*   **Supabase Integration**: All data operations are handled through Supabase, providing a scalable and reliable backend.
-*   **Responsive UI**: The application is designed to be fully responsive and accessible on both desktop and mobile devices.
+## 5. How to Use
 
----
+### 5.1. Prerequisites
 
-## 4. How to Use
+*   Node.js (version 18 or higher)
+*   npm or bun package manager
+*   Supabase account
 
-1.  **Clone the repository** and navigate to the project directory.
-2.  **Install dependencies**: Run `npm install` or `bun install`.
-3.  **Set up Supabase**:
-    *   Create a `.env` file in the root of the project.
-    *   Add your Supabase URL and Anon Key to the `.env` file:
-        ```
-        VITE_SUPABASE_URL=your-supabase-url
-        VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
-        ```
-    *   _Other required environment variables:_
-        - (Add any additional variables here as your project grows)
-        - Example: `VITE_API_BASE_URL`, `VITE_FEATURE_FLAG_X`, etc.
-4.  **Start the development server**: Run `npm run dev`.
-5.  **Access the application**: Open your browser and navigate to `http://localhost:8080`. The admin dashboard is available at `/admin`.
+### 5.2. Installation
 
----
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd social-service-hub
+   ```
 
-## 5. Notes
+2. **Install dependencies**:
+   ```bash
+   npm install
+   # or
+   bun install
+   ```
 
-*   All CRUD and workflow logic is handled via the Supabase API, ensuring a single source of truth for all data.
-*   Each admin page is designed to be modular and can be easily extended with new features.
-*   The transaction and order logic supports linking and refund workflows, providing a robust audit trail.
+3. **Set up environment variables**:
+   Create a `.env` file in the root directory:
+   ```env
+   VITE_SUPABASE_URL=your-supabase-url
+   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
 
-For further details, please refer to the comments within each file or contact the project maintainer.
+4. **Set up Supabase**:
+   - Create a new Supabase project
+   - Run the SQL schema provided in section 15
+   - Configure Row Level Security policies
+   - Set up authentication providers if needed
 
----
+5. **Start the development server**:
+   ```bash
+   npm run dev
+   # or
+   bun run dev
+   ```
 
-## 6. Supabase Schema and Row Level Security (RLS)
+6. **Access the application**:
+   Open your browser and navigate to `http://localhost:5173`
+
+### 5.3. Default Admin Setup
+
+To create an admin user:
+1. Register a new user through the registration page
+2. In your Supabase dashboard, update the user's `is_admin` field to `true`
+3. The user will now have access to admin features
+
+## 6. API Documentation
+
+### 6.1. Authentication API (`authApi.ts`)
+
+```typescript
+// Login user
+login(email: string, password: string): Promise<AuthResponse>
+
+// Register new user
+register(email: string, password: string): Promise<AuthResponse>
+
+// Logout current user
+logout(): Promise<void>
+
+// Get current user
+getCurrentUser(): Promise<User | null>
+```
+
+### 6.2. User API (`userApi.ts`)
+
+```typescript
+// Get all users (admin only)
+getUsers(): Promise<User[]>
+
+// Get user by ID
+getUserById(id: string): Promise<User>
+
+// Update user
+updateUser(id: string, updates: Partial<User>): Promise<User>
+
+// Delete user
+deleteUser(id: string): Promise<void>
+```
+
+### 6.3. Service API (`serviceApi.ts`)
+
+```typescript
+// Get all services
+getServices(): Promise<Service[]>
+
+// Create new service
+createService(service: CreateServiceRequest): Promise<Service>
+
+// Update service
+updateService(id: string, updates: Partial<Service>): Promise<Service>
+
+// Delete service
+deleteService(id: string): Promise<void>
+```
+
+### 6.4. Order API (`orderApi.ts`)
+
+```typescript
+// Get orders for user
+getUserOrders(userId: string): Promise<Order[]>
+
+// Create new order
+createOrder(order: CreateOrderRequest): Promise<Order>
+
+// Update order status
+updateOrderStatus(id: string, status: OrderStatus): Promise<Order>
+
+// Process refund
+processRefund(orderId: string): Promise<void>
+```
+
+### 6.5. Transaction API (`transactionApi.ts`)
+
+```typescript
+// Get user transactions
+getUserTransactions(userId: string): Promise<Transaction[]>
+
+// Create transaction
+createTransaction(transaction: CreateTransactionRequest): Promise<Transaction>
+
+// Update transaction status
+updateTransactionStatus(id: string, status: TransactionStatus): Promise<Transaction>
+```
+
+### 6.6. Wallet API (`addFundApi.ts`)
+
+```typescript
+// Get user wallet
+getUserWallet(userId: string): Promise<Wallet>
+
+// Add funds to wallet
+addFunds(userId: string, amount: number): Promise<Transaction>
+
+// Get wallet balance
+getWalletBalance(userId: string): Promise<number>
+```
+
+## 7. Testing
+
+### 7.1. Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run specific test file
+npm test -- UserManagement.test.tsx
+```
+
+### 7.2. Test Structure
+
+```
+src/
+├── __tests__/
+│   ├── components/
+│   ├── hooks/
+│   ├── pages/
+│   └── utils/
+├── __mocks__/
+└── test-utils.tsx
+```
+
+### 7.3. Testing Guidelines
+
+- Use React Testing Library for component tests
+- Mock Supabase client for API tests
+- Test user interactions and accessibility
+- Maintain test coverage above 80%
+
+## 8. Deployment
+
+### 8.1. Build for Production
+
+```bash
+# Create production build
+npm run build
+
+# Preview production build locally
+npm run preview
+```
+
+### 8.2. Deployment Options
+
+#### Vercel (Recommended)
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Set environment variables in Vercel dashboard
+```
+
+#### Netlify
+```bash
+# Install Netlify CLI
+npm i -g netlify-cli
+
+# Deploy
+netlify deploy --prod --dir=dist
+```
+
+#### Self-hosted
+```bash
+# Build the project
+npm run build
+
+# Serve the dist folder with any static file server
+# Example with serve:
+npx serve -s dist
+```
+
+### 8.3. Environment Variables for Production
+
+Ensure these environment variables are set in your deployment platform:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+
+## 9. Development Workflow
+
+### 9.1. Git Workflow
+
+```bash
+# Create feature branch
+git checkout -b feature/feature-name
+
+# Make changes and commit
+git add .
+git commit -m "feat: add new feature"
+
+# Push and create pull request
+git push origin feature/feature-name
+```
+
+### 9.2. Code Style
+
+- Use TypeScript for type safety
+- Follow ESLint and Prettier configurations
+- Use conventional commits
+- Write meaningful component and function names
+
+### 9.3. Development Scripts
+
+```bash
+# Start development server
+npm run dev
+
+# Type checking
+npm run type-check
+
+# Lint code
+npm run lint
+
+# Format code
+npm run format
+
+# Build project
+npm run build
+```
+
+## 10. Troubleshooting
+
+### 10.1. Common Issues
+
+#### Supabase Connection Issues
+```bash
+# Check environment variables
+echo $VITE_SUPABASE_URL
+echo $VITE_SUPABASE_ANON_KEY
+
+# Verify Supabase project is active
+# Check network connectivity
+# Validate API keys in Supabase dashboard
+```
+
+#### Build Errors
+```bash
+# Clear node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# Clear Vite cache
+rm -rf node_modules/.vite
+npm run dev
+```
+
+#### Authentication Issues
+- Verify RLS policies are correctly configured
+- Check if user has the required permissions
+- Ensure auth tokens are not expired
+
+### 10.2. Debug Mode
+
+Enable debug mode by adding to `.env`:
+```env
+VITE_DEBUG=true
+```
+
+### 10.3. Performance Issues
+
+- Check network tab for slow API calls
+- Use React DevTools Profiler
+- Monitor Supabase dashboard for query performance
+
+## 11. Performance Considerations
+
+### 11.1. Optimization Strategies
+
+- **Code Splitting**: Use dynamic imports for large components
+- **Lazy Loading**: Implement lazy loading for images and components
+- **Caching**: Utilize TanStack Query for efficient data caching
+- **Database Indexing**: Ensure proper indexes on frequently queried columns
+
+### 11.2. Bundle Analysis
+
+```bash
+# Analyze bundle size
+npm run build
+npm run analyze
+```
+
+### 11.3. Database Performance
+
+- Use the provided database indexes
+- Implement pagination for large datasets
+- Monitor query performance in Supabase dashboard
+- Use database views for complex queries
+
+## 12. Security Considerations
+
+### 12.1. Authentication Security
+
+- Implement proper session management
+- Use secure password policies
+- Enable MFA when available
+- Regularly rotate API keys
+
+### 12.2. Data Security
+
+- All sensitive data is protected by RLS policies
+- Input validation on both client and server
+- Sanitize user inputs to prevent XSS
+- Use environment variables for sensitive configuration
+
+### 12.3. API Security
+
+- Rate limiting implemented through Supabase
+- CORS properly configured
+- All API endpoints require authentication
+- Admin endpoints have additional authorization checks
+
+## 13. Contributing
+
+### 13.1. Getting Started
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new features
+5. Ensure all tests pass
+6. Submit a pull request
+
+### 13.2. Development Guidelines
+
+- Follow the existing code style
+- Write comprehensive tests
+- Update documentation for new features
+- Use TypeScript for all new code
+- Follow the component structure conventions
+
+### 13.3. Pull Request Process
+
+1. Ensure your code follows the style guide
+2. Add appropriate tests
+3. Update documentation if needed
+4. Request review from maintainers
+5. Address feedback and merge
+
+### 13.4. Code Review Checklist
+
+- [ ] Code follows style guidelines
+- [ ] Tests are included and passing
+- [ ] Documentation is updated
+- [ ] No breaking changes without discussion
+- [ ] Security considerations addressed
+
+## 14. License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### 14.1. Third-Party Licenses
+
+- React: MIT License
+- Supabase: Apache License 2.0
+- Tailwind CSS: MIT License
+- shadcn/ui: MIT License
+
+## 15. Supabase Schema and Row Level Security (RLS)
 
 -- =============================================
 -- Admin Service Hub - Supabase Schema và RLS
